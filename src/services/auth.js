@@ -1,26 +1,24 @@
 import * as Google from 'expo-auth-session/providers/google';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
+import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GOOGLE_WEB_CLIENT_ID, GOOGLE_ANDROID_CLIENT_ID } from '../config/keys';
 
 WebBrowser.maybeCompleteAuthSession();
 
 // ─── Google OAuth Client IDs ─────────────────────────────────────────────────
-// WEB_CLIENT_ID: 'Web application' type from Google Cloud Console
-// ANDROID_CLIENT_ID: 'Android' type from Google Cloud Console (SHA-1 fingerprint required)
-const WEB_CLIENT_ID = '925000798195-oqrbbtvg9dr5gqvphcogaf341c1dkp0n.apps.googleusercontent.com';
-const ANDROID_CLIENT_ID = '925000798195-vk38bt14donvib3oq4pqjqgbntf8h1ps.apps.googleusercontent.com';
+const WEB_CLIENT_ID = GOOGLE_WEB_CLIENT_ID;
+const ANDROID_CLIENT_ID = GOOGLE_ANDROID_CLIENT_ID;
 
 // ─── Google Auth Hook ────────────────────────────────────────────────────────
 // Returns the auth request, response, and promptAsync function.
 // Uses expo-auth-session's Google provider for a clean OAuth flow.
 export const useGoogleAuth = () => {
-    const redirectUri = AuthSession.makeRedirectUri({
-        scheme: 'drivedrop',
-        path: 'redirect',
-    });
+    // Check if we are running in Expo Go or a standalone build
+    const isExpoGo = Constants.appOwnership === 'expo';
 
-    console.log('[Auth] Redirect URI:', redirectUri);
+    console.log('[Auth] Environment:', isExpoGo ? 'Expo Go' : 'Standalone/Development Client');
 
     const [request, response, promptAsync] = Google.useAuthRequest({
         androidClientId: ANDROID_CLIENT_ID,
@@ -32,7 +30,7 @@ export const useGoogleAuth = () => {
             'https://www.googleapis.com/auth/drive',
             'https://www.googleapis.com/auth/drive.file',
         ],
-        redirectUri,
+        // Let Expo handle the redirect URI automatically for better compatibility
     });
 
     return { request, response, promptAsync };

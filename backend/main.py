@@ -23,7 +23,11 @@ app.add_middleware(
 )
 
 # Configuration from environment or keys
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyBq6l-5-vjLarogikzhSu2HFPmoHdGk7nM")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    # Error if API key is not found in production
+    print("Warning: GEMINI_API_KEY not found in environment variables.")
+
 genai.configure(api_key=GEMINI_API_KEY)
 
 # --- Document Extraction Helpers ---
