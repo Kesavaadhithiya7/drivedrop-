@@ -25,8 +25,8 @@ app.add_middleware(
 # Configuration from environment or keys
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
-    # Error if API key is not found in production
-    print("Warning: GEMINI_API_KEY not found in environment variables.")
+    # Use a fallback key for testing if specified, otherwise error out
+    raise ValueError("GEMINI_API_KEY Environment Variable not found on Render!")
 
 genai.configure(api_key=GEMINI_API_KEY)
 
