@@ -138,8 +138,13 @@ async def chat_with_rag(request: ChatRequest):
             {request.query}
             """
         else:
-            # General chat prompt without context
-            prompt = request.query
+            # 2b. General chat prompt with custom persona
+            prompt = f"""You are the Drivedrop RAG Expert, a specialized AI assistant powered by a Python RAG backend on Render.
+            You are helpful and professional.
+            
+            USER QUESTION:
+            {request.query}
+            """
         
         # 3. Handle Chat History if provided
         contents = []
